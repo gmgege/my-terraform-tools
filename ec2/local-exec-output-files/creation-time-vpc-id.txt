@@ -1,3 +1,0 @@
-VPC created on Tue Nov 28 10:36:35 IST 2023 and VPC ID: vpc-03b65bf021fae83d9
-VPC created on Tue 29 Oct 2024 15:42:23 NZDT and VPC ID: vpc-0a1663adb877d1a1c
-VPC created on Tue 29 Oct 2024 16:10:47 NZDT and VPC ID: vpc-0b928fba181e32653
