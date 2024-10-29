@@ -11,3 +11,5 @@ userdata.sh
 
 *.pem
 *.pub
+
+local-exec-output-files/
