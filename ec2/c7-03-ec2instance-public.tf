@@ -15,6 +15,7 @@ module "ec2_public_instance" {
   subnet_id              = module.vpc.public_subnets[0]
   vpc_security_group_ids = [module.public_instance_sg.security_group_id]
   tags                   = local.common_tags
+  associate_public_ip_address = true
 
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 }
