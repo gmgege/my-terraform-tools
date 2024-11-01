@@ -34,12 +34,24 @@ sudo apt-get install -y \
     fonts-powerline \
     && echo "基础依赖包安装完成。" || echo "基础依赖包安装失败。"
 
-echo "安装 Oh My Zsh..."
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+echo "检查 SSH 服务状态..."
+if sudo systemctl is-active --quiet ssh; then
+  echo "SSH 服务已运行。"
+else
+  echo "SSH 服务未运行，尝试启动..."
+  sudo systemctl start ssh && echo "SSH 服务启动成功。" || echo "SSH 服务启动失败。"
+fi
 
-# 安装常用的 Zsh 插件
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+echo "安装 Oh My Zsh..."
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+  # 安装常用的 Zsh 插件
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+else
+  echo "Oh My Zsh already installed, skipping..."
+fi
+
 
 # 配置 Zsh
 sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/' ~/.zshrc
@@ -95,15 +107,15 @@ sudo apt-get install -y nginx && echo "Nginx 安装完成。" || echo "Nginx 安
 
 echo "安装 AWS CLI v2..."
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+unzip -o awscliv2.zip
+sudo ./aws/install --update || sudo ./aws/install
 rm -rf aws awscliv2.zip
 aws --version && echo "AWS CLI v2 安装完成。" || echo "AWS CLI v2 安装失败。"
 
 echo "安装 AWS SAM CLI..."
 wget https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip
-unzip aws-sam-cli-linux-x86_64.zip -d sam-installation
-sudo ./sam-installation/install
+unzip -o aws-sam-cli-linux-x86_64.zip -d sam-installation
+sudo ./sam-installation/install --update || sudo ./sam-installation/install
 rm -rf sam-installation aws-sam-cli-linux-x86_64.zip
 sam --version && echo "AWS SAM CLI 安装完成。" || echo "AWS SAM CLI 安装失败。"
 
@@ -171,14 +183,9 @@ echo "设置服务开机自启动..."
 sudo systemctl enable nginx && echo "Nginx 设置为开机自启动。" || echo "Nginx 开机自启动设置失败。"
 sudo systemctl enable snap.amazon-ssm-agent.amazon-ssm-agent.service && echo "Amazon SSM Agent 设置为开机自启动。" || echo "Amazon SSM Agent 开机自启动设置失败。"
 sudo systemctl enable docker && echo "Docker 设置为开机自启动。" || echo "Docker 开机自启动设置失败。"
+sudo systemctl enable ssh && echo "SSH 设置为开机自启动。" || echo "SSH 开机自启动设置失败。"
 
-echo "检查 SSH 服务状态..."
-if sudo systemctl is-active --quiet ssh; then
-  echo "SSH 服务已运行。"
-else
-  echo "SSH 服务未运行，尝试启动..."
-  sudo systemctl start ssh && echo "SSH 服务启动成功。" || echo "SSH 服务启动失败。"
-fi
+
 
 # 创建版本管理器使用说明
 cat << 'EOF' > ~/version-manager-guide.txt
