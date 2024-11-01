@@ -63,3 +63,10 @@ variable "enable_bastion_eip" {
   type        = bool
   default     = false
 }
+
+# Bastion Instance Count
+variable "bastion_instance_count" {
+  description = "Number of bastion hosts to deploy (0 means no bastion)"
+  type        = number
+  default     = 0
+}
