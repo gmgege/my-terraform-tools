@@ -22,8 +22,14 @@ resource "aws_iam_role_policy_attachment" "ssm_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+
+resource "aws_iam_role_policy_attachment" "admin_policy" {
+  role       = aws_iam_role.ssm_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+}
+
 # 创建实例配置文件
 resource "aws_iam_instance_profile" "ssm_profile" {
   name = "EC2SSMProfile"
   role = aws_iam_role.ssm_role.name
-} 
+}
