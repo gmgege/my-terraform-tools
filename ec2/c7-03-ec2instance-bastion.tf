@@ -18,6 +18,21 @@ module "ec2_public" {
 
   iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
+  root_block_device = {
+    volume_size           = 50    # 设置根卷大小为 50 GiB
+    volume_type           = "gp3" # 设置 EBS 卷类型
+    delete_on_termination = true
+  }
+
+  ebs_block_device = [
+    {
+      device_name           = "/dev/nvme1n1"
+      volume_size           = 200 # 设置附加卷大小为 100 GiB
+      volume_type           = "gp3"
+      delete_on_termination = false
+    }
+  ]
+
   tags = merge(
     local.common_tags,
     {
